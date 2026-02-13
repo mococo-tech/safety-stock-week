@@ -20,6 +20,7 @@ function NumberControl({
   min = 0,
   max = 9999,
   unit = "",
+  steps = [100, 50, 10],
 }: {
   label: string;
   value: number;
@@ -27,9 +28,9 @@ function NumberControl({
   min?: number;
   max?: number;
   unit?: string;
+  steps?: number[];
 }) {
   const clamp = (v: number) => Math.max(min, Math.min(max, v));
-  const steps = [200, 100, 50];
   const btnClass =
     "h-9 px-2 rounded-lg bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-xs font-bold text-gray-600 transition-colors cursor-pointer";
   return (
@@ -41,10 +42,24 @@ function NumberControl({
             −{s}
           </button>
         ))}
-        <span className="w-20 text-center text-lg font-bold tabular-nums">
-          {value}
-          {unit && <span className="text-xs text-gray-400 ml-0.5">{unit}</span>}
-        </span>
+        <div className="relative flex items-center">
+          <input
+            type="number"
+            value={value}
+            onChange={(e) => {
+              const v = parseInt(e.target.value, 10);
+              if (!isNaN(v)) onChange(clamp(v));
+            }}
+            min={min}
+            max={max}
+            className="w-20 text-center text-lg font-bold tabular-nums bg-transparent border-b-2 border-transparent hover:border-gray-300 focus:border-blue-400 focus:outline-none transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          />
+          {unit && (
+            <span className="absolute right-0.5 text-xs text-gray-400 pointer-events-none">
+              {unit}
+            </span>
+          )}
+        </div>
         {[...steps].reverse().map((s) => (
           <button key={s} className={btnClass} onClick={() => onChange(clamp(value + s))}>
             +{s}
@@ -319,6 +334,7 @@ export default function App() {
               min={0}
               max={9999}
               unit="個"
+              steps={[100, 50, 10]}
             />
             <NumberControl
               label="安全在庫週"
@@ -327,6 +343,7 @@ export default function App() {
               min={0}
               max={12}
               unit="週"
+              steps={[4, 2, 1]}
             />
             <NumberControl
               label="初期在庫数"
@@ -335,6 +352,7 @@ export default function App() {
               min={0}
               max={9999}
               unit="個"
+              steps={[100, 50, 10]}
             />
           </div>
         </div>
