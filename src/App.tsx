@@ -76,37 +76,28 @@ function WeeklyReceivingControl({
         </thead>
         <tbody>
           <tr>
-            {weeklyReceiving.map((val, i) => (
-              <td key={i} className="px-1 py-1 text-center">
-                <div className="flex flex-col items-center gap-0.5">
-                  <button
-                    className="w-7 h-6 rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-xs font-bold text-gray-600 transition-colors cursor-pointer"
-                    onClick={() => onChange(i, Math.min(9999, val + 10))}
-                  >
-                    +10
-                  </button>
-                  <button
-                    className="w-7 h-6 rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-xs font-bold text-gray-600 transition-colors cursor-pointer"
-                    onClick={() => onChange(i, Math.min(9999, val + 1))}
-                  >
-                    +
-                  </button>
-                  <span className="text-sm font-bold tabular-nums w-8 text-center">{val}</span>
-                  <button
-                    className="w-7 h-6 rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-xs font-bold text-gray-600 transition-colors cursor-pointer"
-                    onClick={() => onChange(i, Math.max(0, val - 1))}
-                  >
-                    −
-                  </button>
-                  <button
-                    className="w-7 h-6 rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-xs font-bold text-gray-600 transition-colors cursor-pointer"
-                    onClick={() => onChange(i, Math.max(0, val - 10))}
-                  >
-                    -10
-                  </button>
-                </div>
-              </td>
-            ))}
+            {weeklyReceiving.map((val, i) => {
+              const btnClass =
+                "w-10 h-6 rounded bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-[10px] font-bold text-gray-600 transition-colors cursor-pointer";
+              const steps = [200, 100, 50];
+              return (
+                <td key={i} className="px-1 py-1 text-center">
+                  <div className="flex flex-col items-center gap-0.5">
+                    {steps.map((s) => (
+                      <button key={s} className={btnClass} onClick={() => onChange(i, Math.min(9999, val + s))}>
+                        +{s}
+                      </button>
+                    ))}
+                    <span className="text-sm font-bold tabular-nums w-10 text-center">{val}</span>
+                    {steps.map((s) => (
+                      <button key={s} className={btnClass} onClick={() => onChange(i, Math.max(0, val - s))}>
+                        −{s}
+                      </button>
+                    ))}
+                  </div>
+                </td>
+              );
+            })}
           </tr>
         </tbody>
       </table>
