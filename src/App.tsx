@@ -19,7 +19,6 @@ function NumberControl({
   onChange,
   min = 0,
   max = 9999,
-  step = 1,
   unit = "",
 }: {
   label: string;
@@ -27,42 +26,30 @@ function NumberControl({
   onChange: (v: number) => void;
   min?: number;
   max?: number;
-  step?: number;
   unit?: string;
 }) {
   const clamp = (v: number) => Math.max(min, Math.min(max, v));
+  const steps = [200, 100, 50];
+  const btnClass =
+    "h-9 px-2 rounded-lg bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-xs font-bold text-gray-600 transition-colors cursor-pointer";
   return (
     <div className="flex flex-col items-center gap-1">
       <span className="text-xs text-gray-500 font-medium">{label}</span>
       <div className="flex items-center gap-1">
-        <button
-          className="w-9 h-9 rounded-lg bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-lg font-bold text-gray-600 transition-colors cursor-pointer"
-          onClick={() => onChange(clamp(value - step * 10))}
-        >
-          ⏪
-        </button>
-        <button
-          className="w-9 h-9 rounded-lg bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-lg font-bold text-gray-600 transition-colors cursor-pointer"
-          onClick={() => onChange(clamp(value - step))}
-        >
-          −
-        </button>
+        {steps.map((s) => (
+          <button key={-s} className={btnClass} onClick={() => onChange(clamp(value - s))}>
+            −{s}
+          </button>
+        ))}
         <span className="w-20 text-center text-lg font-bold tabular-nums">
           {value}
           {unit && <span className="text-xs text-gray-400 ml-0.5">{unit}</span>}
         </span>
-        <button
-          className="w-9 h-9 rounded-lg bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-lg font-bold text-gray-600 transition-colors cursor-pointer"
-          onClick={() => onChange(clamp(value + step))}
-        >
-          +
-        </button>
-        <button
-          className="w-9 h-9 rounded-lg bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-lg font-bold text-gray-600 transition-colors cursor-pointer"
-          onClick={() => onChange(clamp(value + step * 10))}
-        >
-          ⏩
-        </button>
+        {[...steps].reverse().map((s) => (
+          <button key={s} className={btnClass} onClick={() => onChange(clamp(value + s))}>
+            +{s}
+          </button>
+        ))}
       </div>
     </div>
   );
@@ -340,7 +327,6 @@ export default function App() {
               onChange={setWeeklyDemand}
               min={0}
               max={9999}
-              step={10}
               unit="個"
             />
             <NumberControl
@@ -349,7 +335,6 @@ export default function App() {
               onChange={setSafetyStockWeeks}
               min={0}
               max={12}
-              step={1}
               unit="週"
             />
             <NumberControl
@@ -358,7 +343,6 @@ export default function App() {
               onChange={setInitialStock}
               min={0}
               max={9999}
-              step={50}
               unit="個"
             />
           </div>
@@ -385,7 +369,6 @@ export default function App() {
                   onChange={setYAxisMax}
                   min={100}
                   max={99999}
-                  step={100}
                 />
               )}
             </div>
